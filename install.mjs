@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Cross-platform installer for the pi-dash skill.
+// Cross-platform installer for the pidash skill.
 //
 // Modes:
-//   - Local:    when run from a clone of pi-dash-skill (skills/codex/pi-dash/
+//   - Local:    when run from a clone of pi-dash-skill (skills/codex/pidash/
 //               sits next to this script), install from that folder.
 //   - Download: otherwise (e.g. when invoked via `npx @airepublic/pidash-skill-installer`),
 //               fetch the skill from github.com/The-AI-Republic/pi-dash-skill@main
@@ -32,7 +32,7 @@ if (Number(detectedNode.split('.')[0]) < REQUIRED_NODE_MAJOR) {
 }
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const SKILL_NAME = 'pi-dash';
+const SKILL_NAME = 'pidash';
 const REPO = 'The-AI-Republic/pi-dash-skill';
 const REF = 'main';
 const LOCAL_SOURCE_DIR = resolve(SCRIPT_DIR, 'skills', 'codex', SKILL_NAME);
@@ -61,7 +61,7 @@ const KNOWN_FLAGS = new Set([...TARGET_FLAGS.keys(), '--help', '-h']);
 function printUsage(out = stdout) {
   out.write(
     [
-      'pi-dash skill installer',
+      'pidash skill installer',
       '',
       'Usage:',
       '  npx @airepublic/pidash-skill-installer            Interactive (default: all)',
@@ -116,7 +116,7 @@ async function promptForTargets() {
 
   stdout.write(
     [
-      'pi-dash skill installer',
+      'pidash skill installer',
       '',
       'Install to:',
       '  1) All (Claude Code + Codex)   [default]',

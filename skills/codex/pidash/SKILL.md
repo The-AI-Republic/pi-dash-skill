@@ -1,5 +1,5 @@
 ---
-name: pi-dash
+name: pidash
 description: Use when the user wants to create, update, list, move, or inspect Pi Dash issues/projects from the current coding workspace using the pidash CLI. Also use when the user asks to initialize Pi Dash workspace context or connect the current repo to a Pi Dash project.
 metadata:
   short-description: Use Pi Dash from a coding agent

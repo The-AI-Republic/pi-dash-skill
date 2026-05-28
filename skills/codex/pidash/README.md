@@ -12,8 +12,8 @@ Run the installer from the repository root:
 node install.mjs
 ```
 
-The installer copies this folder into `~/.claude/skills/pi-dash/` and/or
-`~/.codex/skills/pi-dash/`. See the [repository README](../../../README.md)
+The installer copies this folder into `~/.claude/skills/pidash/` and/or
+`~/.codex/skills/pidash/`. See the [repository README](../../../README.md)
 for the full set of install paths — non-interactive flags, env-var overrides
 (`CLAUDE_HOME` / `CODEX_HOME`), and Codex's built-in `$skill-installer`.
 
