@@ -30,10 +30,13 @@ node install.mjs
 The script prompts for a target — **All** (Claude Code + Codex, default),
 **Claude Code only**, or **Codex only** — and copies the skill into the right
 directory for each. It works identically on macOS, Linux, and Windows
-(PowerShell or cmd) as long as Node.js is installed, which both Claude Code
-and Codex already require.
+(PowerShell or cmd) as long as Node.js 18+ is installed, which both Claude
+Code and Codex already require.
 
-Non-interactive use:
+Set `CLAUDE_HOME` or `CODEX_HOME` to override the default install location
+(defaults are `~/.claude` and `~/.codex`).
+
+Non-interactive use (required when stdin isn't a TTY, e.g. CI):
 
 ```bash
 node install.mjs --all
@@ -57,16 +60,9 @@ GitHub repo — no clone or `cp` required. Inside a Codex session, ask:
 Install the pi-dash skill from github.com/The-AI-Republic/pi-dash-skill at skills/codex/pi-dash
 ```
 
-Codex invokes `$skill-installer`, which runs:
-
-```bash
-scripts/install-skill-from-github.py \
-  --repo The-AI-Republic/pi-dash-skill \
-  --path skills/codex/pi-dash
-```
-
-The skill lands in `~/.codex/skills/pi-dash/` (or `$CODEX_HOME/skills/pi-dash`).
-Private repos are supported via existing git credentials or `GITHUB_TOKEN` /
+`$skill-installer` resolves the GitHub URL, downloads the folder, and places
+it in `~/.codex/skills/pi-dash/` (or `$CODEX_HOME/skills/pi-dash`). Private
+repos are supported via existing git credentials or `GITHUB_TOKEN` /
 `GH_TOKEN`. Restart Codex after installing.
 
 ### Manual install (clone + copy)
@@ -104,16 +100,15 @@ about Pi Dash issues, projects, or workspace context.
 
 ## Update
 
-Pull the latest repository changes, then rerun the install command for your
-agent:
+Pull the latest repository changes, then rerun the installer:
 
 ```bash
 git pull
-rm -rf ~/.codex/skills/pi-dash
-cp -R skills/codex/pi-dash ~/.codex/skills/pi-dash
+node install.mjs
 ```
 
-For Claude Code, replace the destination with `~/.claude/skills/pi-dash`.
+Pass `--all`, `--claude-code`, or `--codex` to update a specific target
+without the prompt.
 
 ## Verify
 
