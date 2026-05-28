@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Cross-platform installer for the pi-dash skill.
+// Cross-platform installer for the pidash skill.
 //
 // Modes:
-//   - Local:    when run from a clone of pi-dash-skill (skills/codex/pi-dash/
+//   - Local:    when run from a clone of pi-dash-skill (skills/codex/pidash/
 //               sits next to this script), install from that folder.
 //   - Download: otherwise (e.g. when invoked via `npx @airepublic/pidash-skill-installer`),
 //               fetch the skill from github.com/The-AI-Republic/pi-dash-skill@main
@@ -32,10 +32,12 @@ if (Number(detectedNode.split('.')[0]) < REQUIRED_NODE_MAJOR) {
 }
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const SKILL_NAME = 'pi-dash';
+const SKILL_NAME = 'pidash';
 const REPO = 'The-AI-Republic/pi-dash-skill';
 const REF = 'main';
 const LOCAL_SOURCE_DIR = resolve(SCRIPT_DIR, 'skills', 'codex', SKILL_NAME);
+const LEGACY_SKILL_NAME = 'pi-dash';
+const TITLE = 'pidash skill installer';
 
 const TARGETS = {
   'claude-code': {
@@ -61,7 +63,7 @@ const KNOWN_FLAGS = new Set([...TARGET_FLAGS.keys(), '--help', '-h']);
 function printUsage(out = stdout) {
   out.write(
     [
-      'pi-dash skill installer',
+      TITLE,
       '',
       'Usage:',
       '  npx @airepublic/pidash-skill-installer            Interactive (default: all)',
@@ -116,7 +118,7 @@ async function promptForTargets() {
 
   stdout.write(
     [
-      'pi-dash skill installer',
+      TITLE,
       '',
       'Install to:',
       '  1) All (Claude Code + Codex)   [default]',
@@ -164,7 +166,7 @@ async function resolveSourceDir() {
     exit(1);
   }
 
-  const tempDir = mkdtempSync(join(tmpdir(), 'pi-dash-skill-'));
+  const tempDir = mkdtempSync(join(tmpdir(), 'pidash-skill-'));
   stdout.write(`Downloading skill from github.com/${REPO}@${REF}...\n`);
 
   const url = `https://codeload.github.com/${REPO}/tar.gz/refs/heads/${REF}`;
@@ -225,6 +227,14 @@ function installToTarget(key, sourceDir) {
       rmSync(backupDir, { recursive: true, force: true });
     }
     stdout.write(`[${label}] installed to ${dir}\n`);
+
+    const legacyDir = join(dirname(dir), LEGACY_SKILL_NAME);
+    if (legacyDir !== dir && existsSync(legacyDir)) {
+      rmSync(legacyDir, { recursive: true, force: true });
+      stdout.write(
+        `[${label}] removed legacy skill dir at ${legacyDir} (renamed ${LEGACY_SKILL_NAME} → ${SKILL_NAME}).\n`,
+      );
+    }
   } catch (err) {
     if (existsSync(stagingDir)) {
       rmSync(stagingDir, { recursive: true, force: true });

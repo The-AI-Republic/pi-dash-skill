@@ -1,6 +1,6 @@
 {
   "name": "@airepublic/pidash-skill-installer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Install the Pi Dash agent skill for Claude Code and/or Codex from anywhere — fetches the skill from GitHub, no clone required.",
   "type": "module",
   "bin": {
@@ -27,7 +27,6 @@
   },
   "license": "AGPL-3.0-or-later",
   "keywords": [
-    "pi-dash",
     "pidash",
     "claude-code",
     "codex",

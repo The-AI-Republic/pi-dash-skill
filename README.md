@@ -75,11 +75,11 @@ Codex ships with a system skill that installs other skills directly from a
 GitHub repo — no clone or `cp` required. Inside a Codex session, ask:
 
 ```text
-Install the pi-dash skill from github.com/The-AI-Republic/pi-dash-skill at skills/codex/pi-dash
+Install the pidash skill from github.com/The-AI-Republic/pi-dash-skill at skills/codex/pidash
 ```
 
 `$skill-installer` resolves the GitHub URL, downloads the folder, and places
-it in `~/.codex/skills/pi-dash/` (or `$CODEX_HOME/skills/pi-dash`). Private
+it in `~/.codex/skills/pidash/` (or `$CODEX_HOME/skills/pidash`). Private
 repos are supported via existing git credentials or `GITHUB_TOKEN` /
 `GH_TOKEN`. Restart Codex after installing.
 
@@ -89,11 +89,11 @@ From a clone of this repository:
 
 ```bash
 mkdir -p ~/.codex/skills
-rm -rf ~/.codex/skills/pi-dash
-cp -R skills/codex/pi-dash ~/.codex/skills/pi-dash
+rm -rf ~/.codex/skills/pidash ~/.codex/skills/pi-dash   # second path clears a pre-rename install
+cp -R skills/codex/pidash ~/.codex/skills/pidash
 ```
 
-Restart Codex after installing. The skill is available as `pi-dash` and should
+Restart Codex after installing. The skill is available as `pidash` and should
 load automatically for Pi Dash issue/project tasks.
 
 ## Install In Claude Code
@@ -103,14 +103,14 @@ Install the same portable skill folder there:
 
 ```bash
 mkdir -p ~/.claude/skills
-rm -rf ~/.claude/skills/pi-dash
-cp -R skills/codex/pi-dash ~/.claude/skills/pi-dash
+rm -rf ~/.claude/skills/pidash ~/.claude/skills/pi-dash   # second path clears a pre-rename install
+cp -R skills/codex/pidash ~/.claude/skills/pidash
 ```
 
 Restart Claude Code after installing. Invoke it directly with:
 
 ```text
-/pi-dash create an issue to change the font size
+/pidash create an issue to change the font size
 ```
 
 Claude Code can also load the skill automatically when the request is clearly
@@ -140,6 +140,11 @@ node install.mjs
 
 Pass `--all`, `--claude-code`, or `--codex` to update a specific target
 without the prompt.
+
+If you installed v0.1.0 (when the skill was named `pi-dash`), the
+installer detects and removes the legacy `~/.<agent>/skills/pi-dash`
+directory automatically on the next run. The manual snippets above also
+clear it.
 
 ## Verify
 
