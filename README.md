@@ -89,7 +89,7 @@ From a clone of this repository:
 
 ```bash
 mkdir -p ~/.codex/skills
-rm -rf ~/.codex/skills/pidash
+rm -rf ~/.codex/skills/pidash ~/.codex/skills/pi-dash   # second path clears a pre-rename install
 cp -R skills/codex/pidash ~/.codex/skills/pidash
 ```
 
@@ -103,7 +103,7 @@ Install the same portable skill folder there:
 
 ```bash
 mkdir -p ~/.claude/skills
-rm -rf ~/.claude/skills/pidash
+rm -rf ~/.claude/skills/pidash ~/.claude/skills/pi-dash   # second path clears a pre-rename install
 cp -R skills/codex/pidash ~/.claude/skills/pidash
 ```
 
@@ -140,6 +140,11 @@ node install.mjs
 
 Pass `--all`, `--claude-code`, or `--codex` to update a specific target
 without the prompt.
+
+If you installed v0.1.0 (when the skill was named `pi-dash`), the
+installer detects and removes the legacy `~/.<agent>/skills/pi-dash`
+directory automatically on the next run. The manual snippets above also
+clear it.
 
 ## Verify
 

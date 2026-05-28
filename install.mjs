@@ -230,8 +230,9 @@ function installToTarget(key, sourceDir) {
 
     const legacyDir = join(dirname(dir), LEGACY_SKILL_NAME);
     if (legacyDir !== dir && existsSync(legacyDir)) {
+      rmSync(legacyDir, { recursive: true, force: true });
       stdout.write(
-        `[${label}] note: legacy skill dir at ${legacyDir} can be removed (skill was renamed from ${LEGACY_SKILL_NAME} to ${SKILL_NAME}).\n`,
+        `[${label}] removed legacy skill dir at ${legacyDir} (renamed ${LEGACY_SKILL_NAME} → ${SKILL_NAME}).\n`,
       );
     }
   } catch (err) {
