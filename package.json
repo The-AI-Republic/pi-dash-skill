@@ -1,0 +1,41 @@
+{
+  "name": "@airepublic/pidash-skill-installer",
+  "version": "0.1.0",
+  "description": "Install the Pi Dash agent skill for Claude Code and/or Codex from anywhere — fetches the skill from GitHub, no clone required.",
+  "type": "module",
+  "bin": {
+    "pidash-skill-installer": "install.mjs"
+  },
+  "files": [
+    "install.mjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "tar": "^7.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The-AI-Republic/pi-dash-skill.git"
+  },
+  "homepage": "https://github.com/The-AI-Republic/pi-dash-skill#readme",
+  "bugs": {
+    "url": "https://github.com/The-AI-Republic/pi-dash-skill/issues"
+  },
+  "license": "AGPL-3.0-or-later",
+  "keywords": [
+    "pi-dash",
+    "pidash",
+    "claude-code",
+    "codex",
+    "skill",
+    "installer",
+    "agent"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

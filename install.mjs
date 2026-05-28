@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 // Cross-platform installer for the pi-dash skill.
-// Usage:
-//   node install.mjs                 # interactive: prompts which target(s) to install
-//   node install.mjs --all           # install to both Claude Code and Codex
-//   node install.mjs --claude-code   # install to Claude Code only
-//   node install.mjs --codex         # install to Codex only
+//
+// Modes:
+//   - Local:    when run from a clone of pi-dash-skill (skills/codex/pi-dash/
+//               sits next to this script), install from that folder.
+//   - Download: otherwise (e.g. when invoked via `npx @airepublic/pidash-skill-installer`),
+//               fetch the skill from github.com/The-AI-Republic/pi-dash-skill@main
+//               into a temp dir and install from there.
 
-import { existsSync, rmSync, cpSync, mkdirSync, renameSync } from 'node:fs';
-import { homedir } from 'node:os';
+import {
+  existsSync,
+  rmSync,
+  cpSync,
+  mkdirSync,
+  renameSync,
+  mkdtempSync,
+} from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
 import { join, resolve, dirname, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline/promises';
@@ -17,14 +26,16 @@ const REQUIRED_NODE_MAJOR = 18;
 const detectedNode = versions.node;
 if (Number(detectedNode.split('.')[0]) < REQUIRED_NODE_MAJOR) {
   stderr.write(
-    `Error: install.mjs requires Node.js ${REQUIRED_NODE_MAJOR}+ (detected ${detectedNode}).\n`,
+    `Error: this installer requires Node.js ${REQUIRED_NODE_MAJOR}+ (detected ${detectedNode}).\n`,
   );
   exit(1);
 }
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const SKILL_NAME = 'pi-dash';
-const SOURCE_DIR = resolve(SCRIPT_DIR, 'skills', 'codex', SKILL_NAME);
+const REPO = 'The-AI-Republic/pi-dash-skill';
+const REF = 'main';
+const LOCAL_SOURCE_DIR = resolve(SCRIPT_DIR, 'skills', 'codex', SKILL_NAME);
 
 const TARGETS = {
   'claude-code': {
@@ -53,10 +64,12 @@ function printUsage(out = stdout) {
       'pi-dash skill installer',
       '',
       'Usage:',
-      '  node install.mjs                 Interactive prompt (default: all)',
-      '  node install.mjs --all           Install to Claude Code and Codex',
-      '  node install.mjs --claude-code   Install to Claude Code only',
-      '  node install.mjs --codex         Install to Codex only',
+      '  npx @airepublic/pidash-skill-installer            Interactive (default: all)',
+      '  npx @airepublic/pidash-skill-installer --all      Install to Claude Code and Codex',
+      '  npx @airepublic/pidash-skill-installer --claude-code',
+      '  npx @airepublic/pidash-skill-installer --codex',
+      '',
+      '  node install.mjs ...                    Equivalent when run from a clone',
       '',
       'Targets:',
       ...ALL_KEYS.map((key) => `  ${TARGETS[key].label.padEnd(12)} ->  ${TARGETS[key].dir}`),
@@ -105,8 +118,6 @@ async function promptForTargets() {
     [
       'pi-dash skill installer',
       '',
-      `Source: ${SOURCE_DIR}`,
-      '',
       'Install to:',
       '  1) All (Claude Code + Codex)   [default]',
       '  2) Claude Code only',
@@ -136,24 +147,71 @@ async function promptForTargets() {
   }
 }
 
-function makeExcludeFilter(excludePaths) {
-  if (excludePaths.length === 0) return undefined;
-  const exclude = new Set(excludePaths.map((p) => p.split('/').join(sep)));
-  return (src) => !exclude.has(relative(SOURCE_DIR, src));
+async function resolveSourceDir() {
+  if (existsSync(join(LOCAL_SOURCE_DIR, 'SKILL.md'))) {
+    return { sourceDir: LOCAL_SOURCE_DIR, cleanup: () => {} };
+  }
+
+  let tarPkg;
+  try {
+    tarPkg = await import('tar');
+  } catch {
+    stderr.write(
+      `Error: skill source not found next to install.mjs, and the 'tar' dependency isn't installed.\n` +
+        `Run via 'npx @airepublic/pidash-skill-installer' (recommended), or clone the\n` +
+        `pi-dash-skill repo and re-run, or run 'npm install' in this directory first.\n`,
+    );
+    exit(1);
+  }
+
+  const tempDir = mkdtempSync(join(tmpdir(), 'pi-dash-skill-'));
+  stdout.write(`Downloading skill from github.com/${REPO}@${REF}...\n`);
+
+  const url = `https://codeload.github.com/${REPO}/tar.gz/refs/heads/${REF}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    rmSync(tempDir, { recursive: true, force: true });
+    throw new Error(
+      `Failed to download skill from ${url}: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const { pipeline } = await import('node:stream/promises');
+  const { Readable } = await import('node:stream');
+  await pipeline(
+    Readable.fromWeb(response.body),
+    tarPkg.extract({ cwd: tempDir, strip: 1 }),
+  );
+
+  const sourceDir = join(tempDir, 'skills', 'codex', SKILL_NAME);
+  if (!existsSync(join(sourceDir, 'SKILL.md'))) {
+    rmSync(tempDir, { recursive: true, force: true });
+    throw new Error(
+      `Downloaded archive does not contain skills/codex/${SKILL_NAME}/SKILL.md`,
+    );
+  }
+
+  return { sourceDir, cleanup: () => rmSync(tempDir, { recursive: true, force: true }) };
 }
 
-function installToTarget(key) {
+function makeExcludeFilter(sourceDir, excludePaths) {
+  if (excludePaths.length === 0) return undefined;
+  const exclude = new Set(excludePaths.map((p) => p.split('/').join(sep)));
+  return (src) => !exclude.has(relative(sourceDir, src));
+}
+
+function installToTarget(key, sourceDir) {
   const { label, dir, excludePaths } = TARGETS[key];
   mkdirSync(dirname(dir), { recursive: true });
 
   const stamp = `${pid}-${Date.now()}`;
   const stagingDir = `${dir}.installing-${stamp}`;
   const backupDir = `${dir}.bak-${stamp}`;
-  const filter = makeExcludeFilter(excludePaths);
+  const filter = makeExcludeFilter(sourceDir, excludePaths);
   let backedUp = false;
 
   try {
-    cpSync(SOURCE_DIR, stagingDir, { recursive: true, filter });
+    cpSync(sourceDir, stagingDir, { recursive: true, filter });
 
     if (existsSync(dir)) {
       stdout.write(`[${label}] replacing existing skill at ${dir}\n`);
@@ -183,16 +241,15 @@ function installToTarget(key) {
 }
 
 async function main() {
-  if (!existsSync(SOURCE_DIR)) {
-    stderr.write(`Error: skill source not found at ${SOURCE_DIR}\n`);
-    stderr.write('install.mjs must sit next to the skills/ directory.\n');
-    exit(1);
-  }
-
   const selected = parseFlag() ?? (await promptForTargets());
+  const { sourceDir, cleanup } = await resolveSourceDir();
 
-  for (const key of selected) {
-    installToTarget(key);
+  try {
+    for (const key of selected) {
+      installToTarget(key, sourceDir);
+    }
+  } finally {
+    cleanup();
   }
 
   stdout.write('\nDone. Restart the agent to pick up the new skill.\n');
