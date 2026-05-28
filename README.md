@@ -19,35 +19,53 @@ Dash project to use. Initialize it when needed:
 pidash context init --project <project-id-or-identifier>
 ```
 
-## Quick Install (macOS / Linux / Windows)
+## Install via npm (recommended)
 
-From a clone of this repository:
+No clone required — `npx` downloads the installer + skill on demand:
 
 ```bash
-node install.mjs
+npx @pi-dash/skill-installer
 ```
 
-The script prompts for a target — **All** (Claude Code + Codex, default),
-**Claude Code only**, or **Codex only** — and copies the skill into the right
-directory for each. It works identically on macOS, Linux, and Windows
-(PowerShell or cmd) as long as Node.js 18+ is installed, which both Claude
-Code and Codex already require.
+The installer prompts for a target — **All** (Claude Code + Codex, default),
+**Claude Code only**, or **Codex only** — fetches the skill from this repo's
+`main` branch, and writes it into the agent's skills directory. Works
+identically on macOS, Linux, and Windows (PowerShell or cmd).
 
-Set `CLAUDE_HOME` or `CODEX_HOME` to override the default install location
-(defaults are `~/.claude` and `~/.codex`).
+For a persistent global install:
+
+```bash
+npm install -g @pi-dash/skill-installer
+pi-dash-skill-install
+```
 
 Non-interactive use (required when stdin isn't a TTY, e.g. CI):
 
 ```bash
-node install.mjs --all
-node install.mjs --claude-code
-node install.mjs --codex
+npx @pi-dash/skill-installer --all
+npx @pi-dash/skill-installer --claude-code
+npx @pi-dash/skill-installer --codex
 ```
 
-Restart your agent after installing.
+Requires Node.js 18+ (both Claude Code and Codex already do). Set
+`CLAUDE_HOME` or `CODEX_HOME` to override the default install locations
+(`~/.claude` and `~/.codex`). Restart your agent after installing.
+
+## Install from a clone
+
+For development or to test local changes:
+
+```bash
+git clone https://github.com/The-AI-Republic/pi-dash-skill.git
+cd pi-dash-skill
+node install.mjs
+```
+
+Same prompts and flags as the npm path; the script skips the GitHub
+download because the skill folder is present next to it.
 
 The sections below cover agent-specific install paths if you'd rather skip the
-script.
+installer altogether.
 
 ## Install In Codex
 
@@ -100,7 +118,20 @@ about Pi Dash issues, projects, or workspace context.
 
 ## Update
 
-Pull the latest repository changes, then rerun the installer:
+`npx` always pulls the latest skill from `main`:
+
+```bash
+npx @pi-dash/skill-installer
+```
+
+For a global install:
+
+```bash
+npm update -g @pi-dash/skill-installer
+pi-dash-skill-install
+```
+
+From a clone:
 
 ```bash
 git pull
