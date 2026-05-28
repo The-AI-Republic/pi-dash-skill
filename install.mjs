@@ -36,6 +36,8 @@ const SKILL_NAME = 'pidash';
 const REPO = 'The-AI-Republic/pi-dash-skill';
 const REF = 'main';
 const LOCAL_SOURCE_DIR = resolve(SCRIPT_DIR, 'skills', 'codex', SKILL_NAME);
+const LEGACY_SKILL_NAME = 'pi-dash';
+const TITLE = 'pidash skill installer';
 
 const TARGETS = {
   'claude-code': {
@@ -61,7 +63,7 @@ const KNOWN_FLAGS = new Set([...TARGET_FLAGS.keys(), '--help', '-h']);
 function printUsage(out = stdout) {
   out.write(
     [
-      'pidash skill installer',
+      TITLE,
       '',
       'Usage:',
       '  npx @airepublic/pidash-skill-installer            Interactive (default: all)',
@@ -116,7 +118,7 @@ async function promptForTargets() {
 
   stdout.write(
     [
-      'pidash skill installer',
+      TITLE,
       '',
       'Install to:',
       '  1) All (Claude Code + Codex)   [default]',
@@ -164,7 +166,7 @@ async function resolveSourceDir() {
     exit(1);
   }
 
-  const tempDir = mkdtempSync(join(tmpdir(), 'pi-dash-skill-'));
+  const tempDir = mkdtempSync(join(tmpdir(), 'pidash-skill-'));
   stdout.write(`Downloading skill from github.com/${REPO}@${REF}...\n`);
 
   const url = `https://codeload.github.com/${REPO}/tar.gz/refs/heads/${REF}`;
@@ -225,6 +227,13 @@ function installToTarget(key, sourceDir) {
       rmSync(backupDir, { recursive: true, force: true });
     }
     stdout.write(`[${label}] installed to ${dir}\n`);
+
+    const legacyDir = join(dirname(dir), LEGACY_SKILL_NAME);
+    if (legacyDir !== dir && existsSync(legacyDir)) {
+      stdout.write(
+        `[${label}] note: legacy skill dir at ${legacyDir} can be removed (skill was renamed from ${LEGACY_SKILL_NAME} to ${SKILL_NAME}).\n`,
+      );
+    }
   } catch (err) {
     if (existsSync(stagingDir)) {
       rmSync(stagingDir, { recursive: true, force: true });
