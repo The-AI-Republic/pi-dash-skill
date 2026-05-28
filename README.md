@@ -24,7 +24,7 @@ pidash context init --project <project-id-or-identifier>
 No clone required — `npx` downloads the installer + skill on demand:
 
 ```bash
-npx @pi-dash/skill-installer
+npx @airepublic/pidash-skill-installer
 ```
 
 The installer prompts for a target — **All** (Claude Code + Codex, default),
@@ -35,16 +35,16 @@ identically on macOS, Linux, and Windows (PowerShell or cmd).
 For a persistent global install:
 
 ```bash
-npm install -g @pi-dash/skill-installer
-pi-dash-skill-install
+npm install -g @airepublic/pidash-skill-installer
+pidash-skill-installer
 ```
 
 Non-interactive use (required when stdin isn't a TTY, e.g. CI):
 
 ```bash
-npx @pi-dash/skill-installer --all
-npx @pi-dash/skill-installer --claude-code
-npx @pi-dash/skill-installer --codex
+npx @airepublic/pidash-skill-installer --all
+npx @airepublic/pidash-skill-installer --claude-code
+npx @airepublic/pidash-skill-installer --codex
 ```
 
 Requires Node.js 18+ (both Claude Code and Codex already do). Set
@@ -121,14 +121,14 @@ about Pi Dash issues, projects, or workspace context.
 `npx` always pulls the latest skill from `main`:
 
 ```bash
-npx @pi-dash/skill-installer
+npx @airepublic/pidash-skill-installer
 ```
 
 For a global install:
 
 ```bash
-npm update -g @pi-dash/skill-installer
-pi-dash-skill-install
+npm update -g @airepublic/pidash-skill-installer
+pidash-skill-installer
 ```
 
 From a clone:

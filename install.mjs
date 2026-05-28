@@ -4,7 +4,7 @@
 // Modes:
 //   - Local:    when run from a clone of pi-dash-skill (skills/codex/pi-dash/
 //               sits next to this script), install from that folder.
-//   - Download: otherwise (e.g. when invoked via `npx @pi-dash/skill-installer`),
+//   - Download: otherwise (e.g. when invoked via `npx @airepublic/pidash-skill-installer`),
 //               fetch the skill from github.com/The-AI-Republic/pi-dash-skill@main
 //               into a temp dir and install from there.
 
@@ -64,10 +64,10 @@ function printUsage(out = stdout) {
       'pi-dash skill installer',
       '',
       'Usage:',
-      '  npx @pi-dash/skill-installer            Interactive (default: all)',
-      '  npx @pi-dash/skill-installer --all      Install to Claude Code and Codex',
-      '  npx @pi-dash/skill-installer --claude-code',
-      '  npx @pi-dash/skill-installer --codex',
+      '  npx @airepublic/pidash-skill-installer            Interactive (default: all)',
+      '  npx @airepublic/pidash-skill-installer --all      Install to Claude Code and Codex',
+      '  npx @airepublic/pidash-skill-installer --claude-code',
+      '  npx @airepublic/pidash-skill-installer --codex',
       '',
       '  node install.mjs ...                    Equivalent when run from a clone',
       '',
@@ -158,7 +158,7 @@ async function resolveSourceDir() {
   } catch {
     stderr.write(
       `Error: skill source not found next to install.mjs, and the 'tar' dependency isn't installed.\n` +
-        `Run via 'npx @pi-dash/skill-installer' (recommended), or clone the\n` +
+        `Run via 'npx @airepublic/pidash-skill-installer' (recommended), or clone the\n` +
         `pi-dash-skill repo and re-run, or run 'npm install' in this directory first.\n`,
     );
     exit(1);

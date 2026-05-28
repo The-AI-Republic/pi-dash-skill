@@ -1,10 +1,10 @@
 {
-  "name": "@pi-dash/skill-installer",
+  "name": "@airepublic/pidash-skill-installer",
   "version": "0.1.0",
   "description": "Install the Pi Dash agent skill for Claude Code and/or Codex from anywhere — fetches the skill from GitHub, no clone required.",
   "type": "module",
   "bin": {
-    "pi-dash-skill-install": "./install.mjs"
+    "pidash-skill-installer": "./install.mjs"
   },
   "files": [
     "install.mjs",
