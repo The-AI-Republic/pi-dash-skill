@@ -1,6 +1,6 @@
 ---
 name: pidash
-description: Use when the user wants to create, update, list, move, or inspect Pi Dash issues/projects from the current coding workspace using the pidash CLI. Also use when the user asks to initialize Pi Dash workspace context or connect the current repo to a Pi Dash project.
+description: Use when the user wants to create, update, list, move, search, or inspect Pi Dash issues/projects from the current coding workspace using the pidash CLI. Also use when the user asks to initialize Pi Dash workspace context or connect the current repo to a Pi Dash project.
 metadata:
   short-description: Use Pi Dash from a coding agent
 ---
@@ -63,6 +63,31 @@ If the user corrects the project after creation, move the issue:
 ```bash
 pidash issue move <identifier> --project <target-project-id-or-identifier>
 ```
+
+## Issue Search
+
+Find existing issues by content before creating a new one, or to surface
+relevant work for the user:
+
+```bash
+pidash issue search "<query>" [--project <slug-or-id>] [--status open|closed|all] [--limit <n>]
+```
+
+The query supports websearch syntax (quoted phrases, `OR`, `-exclude`) and is
+stem-aware (`color` matches `colors`, `colored`). Default limit is 10, hard
+cap is 50.
+
+When to use:
+
+- Before `pidash issue create`, search the title's key phrase to avoid filing
+  a duplicate. If a strong match comes back, surface it to the user and ask
+  whether to update that one instead.
+- When the user says "find", "look up", "show issues about", or wants to
+  resume work on an unspecified ticket.
+
+Scope to one project with `--project <slug-or-id>`; omit to search the whole
+workspace. Use `--sort -updated` to see the most recently touched matches
+first.
 
 ## Non-Interactive Mode
 
