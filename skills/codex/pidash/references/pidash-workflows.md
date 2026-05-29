@@ -55,3 +55,41 @@ If the user says the issue belongs in another project after creation, move it:
 ```bash
 pidash issue move <PROJECT-123> --project <target-project-id-or-identifier>
 ```
+
+## Search
+
+Find existing issues by content with `pidash issue search`:
+
+```bash
+pidash issue search "<query>"
+```
+
+When to use:
+
+- Before creating a new issue, search the title's key phrase so you don't
+  file a duplicate. If a strong match exists, surface it to the user and
+  ask whether to update that one instead of creating a new one.
+- When the user asks to "find", "look up", "show me issues about", or to
+  resume work on a ticket they haven't named.
+
+Query syntax (Postgres websearch_to_tsquery):
+
+- Quoted phrases for exact wording: `pidash issue search '"dark mode"'`
+- `OR` for alternatives: `pidash issue search 'crash OR panic'`
+- `-` to exclude: `pidash issue search 'release -alpha'`
+- Stem-aware: `color` matches `colors`, `colored`.
+
+Flags:
+
+- `--project <slug-or-id>`: scope to one project. Omit to search the whole
+  workspace.
+- `--status open|closed|all`: default `all`. `open` = in progress;
+  `closed` = completed or cancelled.
+- `--since <ISO 8601>`: lower bound on `updated_at`,
+  e.g. `--since 2025-01-01T00:00:00Z`.
+- `--limit <n>`: default 10, hard cap 50 (tuned for agent context).
+- `--sort rank|-created|-updated`: default `rank` (relevance);
+  `-created` newest first, `-updated` most recently touched first.
+
+In non-interactive mode, never pass an empty or whitespace-only query — the
+server rejects it. Always supply a concrete `<query>`.
