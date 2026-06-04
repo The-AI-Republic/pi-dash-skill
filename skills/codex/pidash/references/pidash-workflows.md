@@ -93,3 +93,17 @@ Flags:
 
 In non-interactive mode, never pass an empty or whitespace-only query — the
 server rejects it. Always supply a concrete `<query>`.
+
+## Comments
+
+When posting a comment that is your own agent message, mark the speaker explicitly:
+
+```bash
+pidash comment add <PROJECT-123> --body-file <path> --as-agent "Codex" --agent-run-id "$PIDASH_AGENT_RUN_ID"
+```
+
+Use your actual runtime name for `--as-agent` when known, for example `Codex` or `Claude Code`; otherwise use `AI Agent`.
+
+If `PIDASH_AGENT_RUN_ID` is not set because you are not inside a Pi Dash agent run, omit `--agent-run-id` but still use `--as-agent`.
+
+The authenticated CLI user remains the audit actor. `--as-agent` is what lets Pi Dash and future agent prompts distinguish AI-agent messages from human replies in the issue conversation.

@@ -89,6 +89,18 @@ Scope to one project with `--project <slug-or-id>`; omit to search the whole
 workspace. Use `--sort -updated` to see the most recently touched matches
 first.
 
+## Issue Comments
+
+When posting a Pi Dash issue comment that is your own agent message, mark the comment speaker explicitly:
+
+```bash
+pidash comment add <identifier> --body-file <path> --as-agent "Codex" --agent-run-id "$PIDASH_AGENT_RUN_ID"
+```
+
+Use your actual runtime name for `--as-agent` when known, for example `Codex` or `Claude Code`; otherwise use `AI Agent`.
+
+If `PIDASH_AGENT_RUN_ID` is not set because you are not inside a Pi Dash agent run, omit `--agent-run-id` but still use `--as-agent`. Do not rely on the authenticated CLI user to identify agent-written comments; `actor` is the audit principal, while `--as-agent` marks who spoke in the issue conversation.
+
 ## Non-Interactive Mode
 
 Never guess in non-interactive mode. Use explicit project, `.pidash/context.md`, `PIDASH_PROJECT_ID`, local CLI default project, or the cloud workspace default project. If none is available, fail with a clear setup instruction.
