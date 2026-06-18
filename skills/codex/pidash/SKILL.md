@@ -101,6 +101,19 @@ Use your actual runtime name for `--as-agent` when known, for example `Codex` or
 
 If `PIDASH_AGENT_RUN_ID` is not set because you are not inside a Pi Dash agent run, omit `--agent-run-id` but still use `--as-agent`. Do not rely on the authenticated CLI user to identify agent-written comments; `actor` is the audit principal, while `--as-agent` marks who spoke in the issue conversation.
 
+## Pull Requests
+
+When you open a GitHub pull request for the issue you are working on, do **both**, in this order:
+
+1. **Comment the PR link on the issue** (see [Issue Comments](#issue-comments)). Issue comments are the main bridge to the human; this is how a reviewer follows your work in the issue conversation.
+2. **Associate the PR with the issue** so Pi Dash records a structured link and can show the PR's live status on the issue:
+
+```bash
+pidash issue attach-pr <identifier> --url <pull-request-url>
+```
+
+Do both — commenting the link does not create the association, and the association does not post a human-visible comment. `attach-pr` is idempotent; one issue may have many PRs, but a PR attaches to exactly one issue.
+
 ## Non-Interactive Mode
 
 Never guess in non-interactive mode. Use explicit project, `.pidash/context.md`, `PIDASH_PROJECT_ID`, local CLI default project, or the cloud workspace default project. If none is available, fail with a clear setup instruction.
