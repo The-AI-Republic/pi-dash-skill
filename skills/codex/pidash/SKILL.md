@@ -109,10 +109,10 @@ When you open a GitHub pull request for the issue you are working on, do **both*
 2. **Associate the PR with the issue** so Pi Dash records a structured link and can show the PR's live status on the issue:
 
 ```bash
-pidash issue attach-pr <identifier> --url <pull-request-url> --agent-run-id "$PIDASH_AGENT_RUN_ID"
+pidash issue attach-pr <identifier> --url <pull-request-url>
 ```
 
-Do both — commenting the link does not create the association, and the association does not post a human-visible comment. `attach-pr` is idempotent; one issue may have many PRs, but a PR attaches to exactly one issue. Omit `--agent-run-id` when not inside a Pi Dash agent run.
+Do both — commenting the link does not create the association, and the association does not post a human-visible comment. `attach-pr` is idempotent; one issue may have many PRs, but a PR attaches to exactly one issue.
 
 ## Non-Interactive Mode
 

@@ -117,7 +117,7 @@ When you open a GitHub pull request for the issue you are working on, do **both*
 2. **Associate the PR with the issue.** Run a second command so Pi Dash records a structured link and can show the PR's live status (open / draft / merged / closed) on the issue:
 
    ```bash
-   pidash issue attach-pr <PROJECT-123> --url <pull-request-url> --agent-run-id "$PIDASH_AGENT_RUN_ID"
+   pidash issue attach-pr <PROJECT-123> --url <pull-request-url>
    ```
 
 Notes:
@@ -125,4 +125,3 @@ Notes:
 - Commenting the link is for the human; `attach-pr` is the machine-readable association. Do **both** — one does not replace the other.
 - `attach-pr` is idempotent: re-running it for the same PR is a no-op (it returns the existing link).
 - One issue may have several attached PRs; a given PR attaches to exactly one issue. Attaching a PR that is already linked to a different issue is rejected.
-- If `PIDASH_AGENT_RUN_ID` is not set because you are not inside a Pi Dash agent run, omit `--agent-run-id`.
